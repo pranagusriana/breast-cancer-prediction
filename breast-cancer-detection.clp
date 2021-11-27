@@ -15,7 +15,7 @@
     (assert (ask mean_concave_points)))
 
 ;=================================================================
-; RULE ask-mean-concave-points (Untuk menghandle mean concave points)
+; (1) RULE ask-mean-concave-points (Untuk menghandle mean concave points)
 ;=================================================================
 (defrule ask-mean-concave-points
     ?ask <- (ask mean_concave_points)
@@ -47,9 +47,9 @@
     (assert (ask mean_concave_points)))
 
 ;=================================================================
-; RULE ask-worst-radius (Untuk menghandle worst radius)
+; (2) RULE ask-worst-radius (Untuk menghandle worst radius)
 ;=================================================================
-(defrule worst-radius
+(defrule ask-worst-radius
     ?ask <- (ask worst_radius)
 =>
     (printout t "worst_radius? ")
@@ -79,41 +79,9 @@
     (assert (ask worst_radius)))
 
 ;=================================================================
-; RULE ask-radius-error (Untuk menghandle radius error)
+; (3) RULE ask-worst-perimeter (Untuk menghandle worst perimeter)
 ;=================================================================
-(defrule radius-error
-    ?ask <- (ask radius_error)
-=>
-    (printout t "radius_error? ")
-    (retract ?ask)
-    (assert (radius_error (read))))
-
-(defrule leq-input-re
-    ?input <- (radius_error ?re&:(numberp ?re)
-                             &:(<= ?re 0.63))
-=>
-    (retract ?input)
-    (assert (ask worst_texture_2)))
-
-(defrule gt-input-re
-    ?input <- (radius_error ?re&:(numberp ?re)
-                             &:(> ?re 0.63))
-=>
-    (retract ?input)
-    (assert (ask mean_smoothness)))
-
-(defrule bad-input-re
-    ?input <- (worst_radius ?re)
-    (not (numberp ?re))
-=>
-    (retract ?input)
-    (printout t "Your input is not valid :( " crlf)
-    (assert (ask radius_error)))
-
-;=================================================================
-; RULE ask-worst-perimeter (Untuk menghandle worst perimeter)
-;=================================================================
-(defrule worst-perimeter
+(defrule ask-worst-perimeter
     ?ask <- (ask worst_perimeter)
 =>
     (printout t "worst_perimeter? ")
@@ -143,7 +111,39 @@
     (assert (ask worst_perimeter)))
 
 ;=================================================================
-; RULE ask-mean-texture-1 (Untuk menghandle mean texture 1)
+; (4) RULE ask-radius-error (Untuk menghandle radius error)
+;=================================================================
+(defrule ask-radius-error
+    ?ask <- (ask radius_error)
+=>
+    (printout t "radius_error? ")
+    (retract ?ask)
+    (assert (radius_error (read))))
+
+(defrule leq-input-re
+    ?input <- (radius_error ?re&:(numberp ?re)
+                             &:(<= ?re 0.63))
+=>
+    (retract ?input)
+    (assert (ask worst_texture_2)))
+
+(defrule gt-input-re
+    ?input <- (radius_error ?re&:(numberp ?re)
+                             &:(> ?re 0.63))
+=>
+    (retract ?input)
+    (assert (ask mean_smoothness)))
+
+(defrule bad-input-re
+    ?input <- (worst_radius ?re)
+    (not (numberp ?re))
+=>
+    (retract ?input)
+    (printout t "Your input is not valid :( " crlf)
+    (assert (ask radius_error)))
+
+;=================================================================
+; (5) RULE ask-mean-texture-1 (Untuk menghandle mean texture 1 jalur worst radius)
 ;=================================================================
 (defrule ask-mean-texture-1
     ?ask <- (ask mean_texture_1)
@@ -173,6 +173,102 @@
     (retract ?input)
     (printout t "Your input is not valid :( " crlf)
     (assert (ask mean_texture_1)))
+
+;=================================================================
+; (11) RULE ask-perimeter-error (Untuk menghandle perimeter error)
+;=================================================================
+(defrule ask-perimeter-error
+    ?ask <- (ask perimeter_error)
+=>
+    (printout t "perimeter_error? ")
+    (retract ?ask)
+    (assert (perimeter_error (read))))
+
+(defrule leq-input-pe
+    ?input <- (perimeter_error ?pe&:(numberp ?pe)
+                             &:(<= ?pe 1.56))
+=>
+    (retract ?input)
+    (assert (ask mean_radius_1)))
+
+(defrule gt-input-pe
+    ?input <- (perimeter_error ?pe&:(numberp ?pe)
+                             &:(> ?pe 1.56))
+=>
+    (retract ?input)
+    (assert (conclusion 0)))
+
+(defrule bad-input-pe
+    ?input <- (perimeter_error ?pe)
+    (not (numberp ?pe))
+=>
+    (retract ?input)
+    (printout t "Your input is not valid :( " crlf)
+    (assert (ask perimeter_error)))
+
+;=================================================================
+; (12) RULE ask-worst-area (Untuk menghandle worst area)
+;=================================================================
+(defrule ask-worst-area
+    ?ask <- (ask worst_area)
+=>
+    (printout t "worst_area? ")
+    (retract ?ask)
+    (assert (worst_area (read))))
+
+(defrule leq-input-wa
+    ?input <- (worst_area ?wa&:(numberp ?wa)
+                             &:(<= ?wa 641.60))
+=>
+    (retract ?input)
+    (assert (conclusion 1)))
+
+(defrule gt-input-wa
+    ?input <- (worst_area ?wa&:(numberp ?wa)
+                             &:(> ?wa 641.60))
+=>
+    (retract ?input)
+    (assert (ask mean_radius_2)))
+
+(defrule bad-input-wa
+    ?input <- (worst_area ?wa)
+    (not (numberp ?wa))
+=>
+    (retract ?input)
+    (printout t "Your input is not valid :( " crlf)
+    (assert (ask worst_area)))
+
+;=================================================================
+; (13) RULE ask-mean-radius-1 (Untuk menghandle mean radius 1 jalur perimeter error)
+;=================================================================
+(defrule ask-mean-radius-1
+    ?ask <- (ask mean_radius_1)
+=>
+    (printout t "mean_radius? ")
+    (retract ?ask)
+    (assert (mean_radius_1 (read))))
+
+(defrule leq-input-mr1
+    ?input <- (mean_radius_1 ?mr1&:(numberp ?mr1)
+                             &:(<= ?mr1 13.34))
+=>
+    (retract ?input)
+    (assert (conclusion 0)))
+
+(defrule gt-input-mr1
+    ?input <- (mean_radius_1 ?mr1&:(numberp ?mr1)
+                             &:(> ?mr1 13.34))
+=>
+    (retract ?input)
+    (assert (conclusion 1)))
+
+(defrule bad-input-mr1
+    ?input <- (mean_radius_1 ?mr1)
+    (not (numberp ?mr1))
+=>
+    (retract ?input)
+    (printout t "Your input is not valid :( " crlf)
+    (assert (ask mean_radius_1)))
 
 ;=================================================================
 ; RULE conclusion
