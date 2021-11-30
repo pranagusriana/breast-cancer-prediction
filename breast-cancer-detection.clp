@@ -135,7 +135,7 @@
     (assert (ask mean_smoothness)))
 
 (defrule bad-input-re
-    ?input <- (worst_radius ?re)
+    ?input <- (radius_error ?re)
     (not (numberp ?re))
 =>
     (retract ?input)
